@@ -1,0 +1,36 @@
+<aside class="sidebar">
+<!-- Logo -->
+<div class="sidebar__logo">
+<div class="sidebar__logo-icon">
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="6" fill="#163572"/>
+<path d="M8 10L16 6L24 10V16C24 20.418 20.418 24 16 24C11.582 24 8 20.418 8 16V10Z"
+              fill="white" opacity="0.9"/>
+<path d="M12 16L15 19L20 13" stroke="#163572" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<div class="sidebar__logo-text">
+<span class="sidebar__logo-name">INTEGRITY</span>
+<span class="sidebar__logo-sub">SOLUTIONS</span>
+</div>
+</div>
+ 
+  <!-- Navigation -->
+<nav class="sidebar__nav">
+<ul class="sidebar__nav-list">
+      @for (item of navItems; track item.route) {
+<li class="sidebar__nav-item">
+<a
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__nav-link--active"
+            class="sidebar__nav-link"
+            [routerLinkActiveOptions]="{ exact: false }"
+>
+<span class="material-icons sidebar__nav-icon">{{ item.icon }}</span>
+<span class="sidebar__nav-label">{{ item.label }}</span>
+</a>
+</li>
+      }
+</ul>
+</nav>
+</aside>

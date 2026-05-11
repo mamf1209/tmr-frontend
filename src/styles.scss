@@ -1,0 +1,52 @@
+/* ============================================================
+   ESTILOS GLOBALES — TMR Frontend
+   ============================================================ */
+ 
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+/* Reset + Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;;
+  color: #374151;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+ 
+/* Scrollbar global */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+ 
+/* Material Icons fix */
+.material-icons {
+  font-family: 'Material Icons', sans-serif !important;
+  font-style: normal;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1;
+}
+ 
+/* Remove default input/button/select styles */
+input, select, textarea, button {
+  font-family: 'Inter', sans-serif;
+}
+ 
+button { cursor: pointer; }
+ 
+a { text-decoration: none; color: inherit; }
+ 
+/* Utility: no-select */
+.no-select { user-select: none; }

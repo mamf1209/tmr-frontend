@@ -1,0 +1,69 @@
+<div class="filtros" [formGroup]="form">
+  <!-- Búsqueda Principal -->
+  <div class="filtros__search">
+    <span class="material-icons filtros__search-icon">search</span>
+    <input
+      class="filtros__search-input"
+      type="text"
+      placeholder="Buscar por nombres, código..."
+      formControlName="busqueda"
+      autocomplete="off"
+    />
+    @if (form.get('busqueda')?.value) {
+    <button class="filtros__search-clear" (click)="(form.get('busqueda')?.setValue(''))" type="button">
+      <span class="material-icons">close</span>
+    </button>
+    }
+  </div>
+
+  <!-- Estado dropdown -->
+  <div class="filtros__estado" (clickOutside)="estadoAbierto = false">
+    <button class="filtros__estado-btn" (click)="toggleEstado()" type="button">
+      <span class="material-icons filtros__estado-icon">add_circle_outline</span>
+      <span>Estado</span>
+    </button>
+
+    @if (estadoAbierto) {
+    <div class="filtros__dropdown">
+      <div class="filtros__dropdown-search">
+        <span class="material-icons">search</span>
+        <input type="text" placeholder="Estado" readonly />
+      </div>
+
+      <div class="filtros__dropdown-list">
+        @for (opcion of opcionesEstado; track opcion.valor) {
+          
+          <!-- Filtramos 'Todos' para que solo salgan los checkboxes de Activo/Inactivo -->
+          @if (opcion.valor !== 'Todos') {
+          <button
+            class="filtros__dropdown-item"
+            (click)="seleccionarEstado(opcion.valor)"
+            type="button"
+          >
+            <div class="filtros__dropdown-checkbox" [class.filtros__dropdown-checkbox--active]="estadoSeleccionado === opcion.valor">
+              @if (estadoSeleccionado === opcion.valor) {
+                <span class="material-icons">check</span>
+              }
+            </div>
+
+            <span class="filtros__dropdown-label">{{ opcion.label }}</span>
+            <span class="filtros__dropdown-count">{{ opcion.valor === 'Activo' ? '44' : '13' }}</span>
+          </button>
+          }
+
+        }
+      </div>
+
+      <!-- La opción TODOS estática al final, debajo de inactivo -->
+      <button
+        class="filtros__dropdown-clear"
+        (click)="seleccionarEstado('Todos')"
+        type="button"
+      >
+        LimpiarFiltros
+      </button>
+
+    </div>
+    }
+  </div>
+</div>

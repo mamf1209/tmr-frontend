@@ -1,0 +1,88 @@
+<div class="colabs-page">
+
+  <!-- Título -->
+  <h1 class="colabs-page__title">Colaboradores</h1>
+
+  <!-- Cards métricas -->
+  <div class="colabs-page__metricas">
+  <app-cards-metricas
+    [noAsignados]="noAsignados"
+    [asignados]="asignados"
+    [inactivos]="inactivos"
+    [activos]="activos"
+  />
+  </div>
+
+  <!-- Toolbar -->
+  <div class="colabs-page__toolbar">
+    <div class="colabs-page__toolbar-left">
+      <app-filtros-colaboradores
+        (filtrosCambian)="onFiltrosCambian($event)"
+      />
+    </div>
+    <div class="colabs-page__toolbar-right">
+      <app-descargar-menu
+        (descargarPDF)="onDescargarPDF()"
+        (descargarExcel)="onDescargarExcel()"
+      />
+      <button class="colabs-page__btn-agregar" (click)="abrirCrear()" type="button">
+        <span class="material-icons">add</span>
+        Agregar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="colabs-page__table-container">
+    <app-tabla-colaboradores
+      [colaboradores]="colaboradores"
+      [cargando]="cargando"
+      (verDetalle)="abrirDetalle($event)"
+      (editar)="abrirEditar($event)"
+      (eliminar)="onEliminar($event)"
+    />
+  </div>
+
+  <!-- Paginación independiente -->
+  <app-paginacion
+    [paginaActual]="paginaActual"
+    [totalPaginas]="totalPaginas"
+    [total]="total"
+    [porPagina]="porPagina"
+    (paginaCambia)="onPaginaCambia($event)"
+  />
+
+</div>
+
+<!-- Modales -->
+@if (modalDetalle) {
+  <app-modal-detalle-colaborador
+    [colaborador]="modalDetalle"
+    (cerrar)="cerrarDetalle()"
+    (editar)="abrirEditar($event)"
+  />
+}
+
+@if (modalCrear) {
+  <app-modal-crear-colaborador
+    (cerrar)="cerrarCrear()"
+    (guardar)="onCrear($event)"
+  />
+}
+
+@if (modalEditar) {
+  <app-modal-editar-colaborador
+    [colaborador]="modalEditar"
+    (cerrar)="cerrarEditar()"
+    (guardar)="onEditar($event)"
+  />
+}
+
+<!-- Toasts -->
+@for (toast of toasts; track toast.id) {
+  <app-toast
+    [tipo]="toast.tipo"
+    [mensaje]="toast.mensaje"
+    (cerrado)="onToastCerrado(toast.id)"
+  />
+}

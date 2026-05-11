@@ -1,0 +1,190 @@
+.tabla-wrapper {
+  //max-height: 611px;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+  max-height: 500px;  
+  background: #ffffff;
+}
+ 
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+ 
+  // ── Cabecera ────────────────────────────────────
+&__head {
+    background: #ffffff;
+    border-bottom: 2px solid #e5e7eb;
+  }
+ 
+  &__th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #737373;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    user-select: none;
+ 
+    &--center  { text-align: center; }
+&--actions { width: 48px; padding: 0; }
+  }
+ 
+  // ── Filas ────────────────────────────────────────
+&__body {}
+ 
+  &__row {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.12s;
+ 
+    &:last-child { border-bottom: none; }
+ 
+    &:hover {
+      background: #fafafa;
+    }
+ 
+    &--skeleton {
+      pointer-events: none;
+    }
+  }
+ 
+  &__td {
+    padding: 7px 16px;
+    font-size: 13px;
+    color: #737373;
+    vertical-align: middle;
+    white-space: nowrap;
+ 
+    &--id      { font-weight: 500; color: #737373; font-size: 13px; }
+&--nombre  { font-weight: 500; }
+&--email   { color: #737373; font-size: 13px; }
+&--cargo   { color: #737373; }
+&--center  { text-align: center; }
+&--actions { padding: 0 8px; text-align: right; }
+ 
+    &--empty {
+      text-align: center;
+      padding: 64px 24px;
+      color: #9ca3af;
+    }
+  }
+ 
+  // ── Tipo badge ───────────────────────────────────
+&__tipo-badge {
+    display: inline-block;
+    padding: 2px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #737373;
+  }
+ 
+  // ── Empty state ──────────────────────────────────
+&__empty-icon {
+    font-size: 40px;
+    color: #d1d5db;
+    display: block;
+    margin: 0 auto 12px;
+  }
+ 
+  &__empty-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #737373;
+    margin: 0 0 4px;
+  }
+ 
+  &__empty-sub {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0;
+  }
+ 
+  // ── Menú tres puntos ─────────────────────────────
+&__menu-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+ 
+  &__menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #9ca3af;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: background 0.12s, color 0.12s;
+ 
+    .material-icons { font-size: 20px; }
+ 
+    &:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+  }
+ 
+  &__dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    min-width: 150px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 200;
+    overflow: hidden;
+    animation: dropFade 0.12s ease;
+  }
+ 
+  &__dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #737373;
+    text-align: left;
+    transition: background 0.1s;
+ 
+    .material-icons { font-size: 17px; color: #6b7280; }
+ 
+    &:hover {
+      background: #f5f5f5;
+    }
+ 
+    &--danger {
+      color: #dc2626;
+      .material-icons { color: #dc2626; }
+&:hover { background: #fef2f2; }
+    }
+  }
+}
+ 
+// ── Skeleton loader ──────────────────────────────────
+.skeleton-line {
+  height: 14px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+  width: 80%;
+}
+ 
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+ 
+@keyframes dropFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}

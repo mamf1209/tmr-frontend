@@ -1,0 +1,23 @@
+<div class="descargar">
+ 
+  <button class="descargar__btn" [class.descargar__btn--open]="abierto" (click)="toggle()" type="button">
+<span>Descargar</span>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+ 
+  @if (abierto) {
+<div class="descargar__overlay" (click)="cerrar()"></div>
+<div class="descargar__panel">
+<p class="descargar__title">Seleccione el formato:</p>
+<button class="descargar__option" (click)="onPDF()" type="button">
+        Descargar PDF
+</button>
+<button class="descargar__option" (click)="onExcel()" type="button">
+        Descargar Excel
+</button>
+</div>
+  }
+ 
+</div>

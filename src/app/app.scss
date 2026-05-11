@@ -1,0 +1,21 @@
+/* --- ESTRUCTURA PRINCIPAL (Ensamblaje del Layout) --- */
+.layout-integrity {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden; // Evita que la pantalla entera tenga scroll
+}
+
+.contenedor-derecho {
+  flex: 1; // Ocupa todo el espacio restante a la derecha del Sidebar
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.vista-contenido {
+  flex: 1;
+  padding: 32px 40px; // Espaciado exacto del Figma
+  overflow-y: auto;   // Solo el contenido central tiene scroll si la tabla es larga
+  background-color: var(--color-white-smoke);
+}
