@@ -1,5 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+export interface FiltroMetrica {
+  tipo: 'estado' | 'asignacion';
+  valor: string | null;
+}
 
 @Component({
   selector: 'app-cards-metricas',
@@ -14,15 +19,24 @@ export class CardsMetricasComponent {
   @Input() inactivos:   number = 0;
   @Input() activos:     number = 0;
 
-  // Card 1: alterna entre No asignados / Asignados
+  @Output() filtrarTabla = new EventEmitter<FiltroMetrica>();
+
   mostrandoAsignados = false;
+  mostrandoActivos   = false;
+
   toggleAsignados(): void {
     this.mostrandoAsignados = !this.mostrandoAsignados;
+    this.filtrarTabla.emit({
+      tipo:  'asignacion',
+      valor: this.mostrandoAsignados ? 'asignado' : 'noAsignado',
+    });
   }
 
-  // Card 2: alterna entre Inactivos / Activos
-  mostrandoActivos = false;
   toggleActivos(): void {
     this.mostrandoActivos = !this.mostrandoActivos;
+    this.filtrarTabla.emit({
+      tipo:  'estado',
+      valor: this.mostrandoActivos ? 'Activo' : 'Inactivo',
+    });
   }
 }

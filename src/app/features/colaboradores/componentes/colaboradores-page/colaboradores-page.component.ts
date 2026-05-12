@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-
+import { FiltroMetrica } from '../cards-metricas/cards-metricas.component';
 import { ExportarService }                  from '../../servicios/exportar.service';
 import { ColaboradoresService }             from '../../servicios/colaboradores.service';
 import { ToastService }                     from '../../../../shared/services/toast.service';
@@ -50,7 +50,7 @@ export class ColaboradoresPageComponent implements OnInit, OnDestroy {
 
   // ── Paginación ───────────────────────────────────────────
   paginaActual = 1;
-  porPagina    = 10;
+  porPagina    = 15;
 
   // ── Filtros ──────────────────────────────────────────────
   filtros: FiltrosColaborador = { busqueda: '', estado: 'Todos' };
@@ -108,6 +108,26 @@ export class ColaboradoresPageComponent implements OnInit, OnDestroy {
     this.cargarDatos();
   }
 
+  onFiltrarDesdeMetrica(filtro: FiltroMetrica): void {
+  if (filtro.tipo === 'estado') {
+    // Filtra por Activo o Inactivo
+    this.filtros = {
+      ...this.filtros,
+      estado: filtro.valor as 'Activo' | 'Inactivo',
+    };
+  } else if (filtro.tipo === 'asignacion') {
+    // No toca el filtro de estado — filtra internamente por numProyectos
+    // Se maneja en el servicio
+    this.filtros = {
+      ...this.filtros,
+      estado: 'Todos',
+      asignacion: filtro.valor as 'asignado' | 'noAsignado',
+    };
+  }
+  this.paginaActual = 1;
+  this.cargarDatos();
+}
+
   // ── Paginación ───────────────────────────────────────────
   onPaginaCambia(pagina: number): void {
     this.paginaActual = pagina;
@@ -156,44 +176,54 @@ export class ColaboradoresPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  onEliminar(col: Colaborador): void {
-    if (!confirm(`¿Eliminar a ${col.nombreCompleto}?`)) return;
-    this.svc.eliminarColaborador(col.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.cargarDatos();
-          this.toastSvc.success('Colaborador eliminado correctamente');
-        },
-        error: () => this.toastSvc.error('Error al eliminar el colaborador'),
-      });
-  }
+  colaboradorAEliminar: Colaborador | null = null;
+
+onEliminar(col: Colaborador): void {
+  this.colaboradorAEliminar = col;
+}
+
+confirmarEliminar(): void {
+  if (!this.colaboradorAEliminar) return;
+  this.svc.eliminarColaborador(this.colaboradorAEliminar.id)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: () => {
+        this.colaboradorAEliminar = null;
+        this.cargarDatos();
+        this.toastSvc.success('Colaborador eliminado correctamente');
+      },
+      error: () => this.toastSvc.error('Error al eliminar el colaborador'),
+    });
+}
+
+cancelarEliminar(): void {
+  this.colaboradorAEliminar = null;
+}
 
   // ── Descargar ────────────────────────────────────────────
   onDescargarPDF(): void {
-    this.svc.getColaboradores({ busqueda: '', estado: 'Todos' }, 1, 9999)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => {
-          this.exportarSvc.exportarPDF(res.data);
-          this.toastSvc.success('PDF generado correctamente');
-        },
-        error: () => this.toastSvc.error('Error al generar el PDF'),
-      });
-  }
+  this.svc.getColaboradores(this.filtros, 1, 9999)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: res => {
+        this.exportarSvc.exportarPDF(res.data);
+        this.toastSvc.success('PDF generado correctamente');
+      },
+      error: () => this.toastSvc.error('Error al generar el PDF'),
+    });
+}
 
-  onDescargarExcel(): void {
-    this.svc.getColaboradores({ busqueda: '', estado: 'Todos' }, 1, 9999)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => {
-          this.exportarSvc.exportarExcel(res.data);
-          this.toastSvc.success('Excel generado correctamente');
-        },
-        error: () => this.toastSvc.error('Error al generar el Excel'),
-      });
-  }
-
+onDescargarExcel(): void {
+  this.svc.getColaboradores(this.filtros, 1, 9999)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: res => {
+        this.exportarSvc.exportarExcel(res.data);
+        this.toastSvc.success('Excel generado correctamente');
+      },
+      error: () => this.toastSvc.error('Error al generar el Excel'),
+    });
+}
   // ── Toast ────────────────────────────────────────────────
   onToastCerrado(id: number): void { this.toastSvc.remover(id); }
 

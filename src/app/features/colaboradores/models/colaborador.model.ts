@@ -88,4 +88,5 @@ export interface ColaboradoresPaginados {
 export interface FiltrosColaborador {
   busqueda: string;
   estado: EstadoColaborador | 'Todos';
+  asignacion?: 'asignado' | 'noAsignado' | null;
 }

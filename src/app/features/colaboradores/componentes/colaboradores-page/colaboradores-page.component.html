@@ -5,12 +5,13 @@
 
   <!-- Cards métricas -->
   <div class="colabs-page__metricas">
-  <app-cards-metricas
-    [noAsignados]="noAsignados"
-    [asignados]="asignados"
-    [inactivos]="inactivos"
-    [activos]="activos"
-  />
+    <app-cards-metricas
+      [noAsignados]="noAsignados"
+      [asignados]="asignados"
+      [inactivos]="inactivos"
+      [activos]="activos"
+      (filtrarTabla)="onFiltrarDesdeMetrica($event)"
+    />
   </div>
 
   <!-- Toolbar -->
@@ -25,10 +26,10 @@
         (descargarPDF)="onDescargarPDF()"
         (descargarExcel)="onDescargarExcel()"
       />
-      <button class="colabs-page__btn-agregar" (click)="abrirCrear()" type="button">
-        <span class="material-icons">add</span>
-        Agregar
-      </button>
+     <button class="colabs-page__btn-agregar" (click)="abrirCrear()" type="button">
+       Agregar
+      <img src="assets/iconos/btn-agregar.svg" alt="agregar" width="16" height="16" />
+     </button>
     </div>
   </div>
 
@@ -39,7 +40,7 @@
       [cargando]="cargando"
       (verDetalle)="abrirDetalle($event)"
       (editar)="abrirEditar($event)"
-      (eliminar)="onEliminar($event)"
+      (eliminar)="onEliminar($event)" 
     />
   </div>
 
@@ -76,6 +77,33 @@
     (cerrar)="cerrarEditar()"
     (guardar)="onEditar($event)"
   />
+}
+
+<!-- Modal confirmar eliminar -->
+@if (colaboradorAEliminar) {
+  <div class="confirm-overlay">
+    <div class="confirm-card">
+
+      <div class="confirm-card__icon-wrapper">
+  <img src="assets/iconos/btn-eliminar.svg" alt="eliminar" width="28" height="28" />
+</div>
+
+      <h3 class="confirm-card__title">¿Eliminar colaborador?</h3>
+      <p class="confirm-card__mensaje">
+        Esta acción eliminará a <strong>{{ colaboradorAEliminar.nombreCompleto }}</strong> permanentemente.
+      </p>
+
+      <div class="confirm-card__actions">
+        <button class="confirm-card__btn confirm-card__btn--cancel" (click)="cancelarEliminar()" type="button">
+          Cancelar
+        </button>
+        <button class="confirm-card__btn confirm-card__btn--confirm" (click)="confirmarEliminar()" type="button">
+          Eliminar
+        </button>
+      </div>
+
+    </div>
+  </div>
 }
 
 <!-- Toasts -->

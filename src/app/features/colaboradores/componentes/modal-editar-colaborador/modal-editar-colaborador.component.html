@@ -75,7 +75,10 @@
               <label class="float-field__label">Nombres <span class="req">*</span></label>
             </div>
             @if (campoInvalido('nombres')) {
-              <span class="form-field__error">Mínimo 2 caracteres</span>
+              <span class="form-field__error">
+                @if (form.get('nombres')?.errors?.['required']) { Campo requerido }
+                @else { Mínimo 3 caracteres }
+              </span>
             }
           </div>
 
@@ -86,7 +89,10 @@
               <label class="float-field__label">Apellidos <span class="req">*</span></label>
             </div>
             @if (campoInvalido('apellidos')) {
-              <span class="form-field__error">Mínimo 2 caracteres</span>
+              <span class="form-field__error">
+                @if (form.get('apellidos')?.errors?.['required']) { Campo requerido }
+                @else { Mínimo 3 caracteres }
+              </span>
             }
           </div>
 
@@ -99,8 +105,7 @@
             @if (campoInvalido('identificacion')) {
               <span class="form-field__error">
                 @if (form.get('identificacion')?.errors?.['required']) { Campo requerido }
-                @else if (form.get('identificacion')?.errors?.['pattern']) { Solo números }
-                @else { Mínimo 8 dígitos }
+                @else { Mínimo 10 caracteres }
               </span>
             }
           </div>
@@ -157,7 +162,7 @@
             @if (campoInvalido('correoElectronico')) {
               <span class="form-field__error">
                 @if (form.get('correoElectronico')?.errors?.['required']) { Campo requerido }
-                @else { Correo inválido }
+                @else { Formato de correo inválido }
               </span>
             }
           </div>
@@ -169,7 +174,10 @@
               <label class="float-field__label">Teléfono <span class="req">*</span></label>
             </div>
             @if (campoInvalido('telefono')) {
-              <span class="form-field__error">Formato: 09XXXXXXXX</span>
+              <span class="form-field__error">
+                @if (form.get('telefono')?.errors?.['required']) { Campo requerido }
+                @else { Mínimo 10 caracteres }
+              </span>
             }
           </div>
 
@@ -180,7 +188,7 @@
               <label class="float-field__label">Dirección <span class="req">*</span></label>
             </div>
             @if (campoInvalido('direccion')) {
-              <span class="form-field__error">Mínimo 5 caracteres</span>
+              <span class="form-field__error">Campo requerido</span>
             }
           </div>
 
@@ -227,14 +235,26 @@
             }
           </div>
 
+          <!-- Cargo — depende del departamento -->
           <div class="form-field">
-            <div class="float-field">
-              <input class="float-field__input" type="text" formControlName="cargo"
-                placeholder=" " [class.float-field__input--error]="campoInvalido('cargo')"/>
-              <label class="float-field__label">Cargo <span class="req">*</span></label>
+            <div class="float-select">
+              <select class="float-select__input" formControlName="cargo"
+                [class.float-select__input--error]="campoInvalido('cargo')"
+                [disabled]="!tieneValor('departamento')">
+                @for (c of cargosDisponibles; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              <label class="float-select__label"
+                [class.float-select__label--up]="tieneValor('cargo')">
+                Cargo <span class="req">*</span>
+              </label>
             </div>
             @if (campoInvalido('cargo')) {
-              <span class="form-field__error">Mínimo 3 caracteres</span>
+              <span class="form-field__error">Campo requerido</span>
+            }
+            @if (!tieneValor('departamento')) {
+              <span class="form-field__hint">Seleccione un departamento primero</span>
             }
           </div>
 
@@ -246,7 +266,10 @@
               <label class="float-field__label">Años de experiencia <span class="req">*</span></label>
             </div>
             @if (campoInvalido('aniosExperiencia')) {
-              <span class="form-field__error">Entre 0 y 50 años</span>
+              <span class="form-field__error">
+                @if (form.get('aniosExperiencia')?.errors?.['required']) { Campo requerido }
+                @else { Entre 0 y 50 años }
+              </span>
             }
           </div>
 

@@ -20,41 +20,85 @@ export class ModalCrearColaboradorComponent implements OnInit {
   form!: FormGroup;
   enviado = false;
 
-  readonly asociaciones: TipoIdentificacion[] = ['RPS', 'ISC', 'RPS E ISC'];
-  readonly tiposContrato: string[]             = ['Fijo', 'Por Proyecto'];
-  readonly modalidades: Modalidad[]            = ['Presencial', 'Remoto', 'Híbrida'];
-  readonly categorias: Categoria[]             = ['Junior', 'Semi-senior', 'Senior', 'Especialista', 'Especialista Plus'];
-  readonly generos: Genero[]                   = ['Masculino', 'Femenino', 'Otro'];
-  readonly departamentos: string[]             = [
-    'Desarrollo', 'QA', 'Diseño UX/UI', 'DevOps', 'Datos',
-    'Gestión de Proyectos', 'Seguridad', 'Infraestructura',
-    'IA & Machine Learning', 'Consultoría',
+  readonly asociaciones: string[]  = ['RPS', 'ISC', 'RPS & ISC'];
+  readonly tiposContrato: string[] = ['Fijo', 'Por Proyecto'];
+  readonly modalidades: Modalidad[] = ['Presencial', 'Remoto', 'Híbrida'];
+  readonly categorias: string[]    = ['Junior', 'Semi-Senior', 'Senior', 'Especialista', 'Especialista Plus'];
+  readonly generos: Genero[]       = ['Masculino', 'Femenino', 'Otro'];
+
+  readonly departamentos: string[] = [
+    'Desarrollo',
+    'Seguridad e Informática',
+    'Procesos',
+    'Proyectos',
+    'Administración',
+    'Comercial',
+    'Recursos Humanos',
   ];
+
+  readonly cargosPorDepartamento: Record<string, string[]> = {
+    'Desarrollo': [
+      'Desarrollador Fullstack', 'Analista QA', 'DevOps',
+      'Desarrollador Backend', 'Desarrollador Frontend', 'Desarrollador Web',
+      'Desarrollador Android', 'Desarrollador Cobol', 'Desarrollador iOS',
+      'Desarrollador Java', 'Desarrollador PHP', 'Desarrollador Visual FoxPro',
+    ],
+    'Recursos Humanos': [
+      'Analista de Talento Humano', 'Líder de Talento Humano',
+    ],
+    'Comercial': [
+      'Gerente Comercial', 'Ejecutivo Comercial', 'Asistente Comercial',
+    ],
+    'Administración': [
+      'Jefe Administrativo', 'Asistente de Marketing',
+      'Asistente Administrativo', 'Asistente Contable',
+    ],
+    'Proyectos': [
+      'Gerente de Proyectos y Producto', 'Coordinador de Proyectos',
+      'Gestor de Proyectos', 'Líder de Proyectos y Productos', 'Líder Técnico',
+    ],
+    'Procesos': [
+      'Analista de Procesos', 'Analista Funcional',
+    ],
+    'Seguridad e Informática': [
+      'Analista Middleware', 'Soporte Técnico',
+      'Líder de Seguridad e Informática', 'Help Desk',
+    ],
+  };
+
+  get cargosDisponibles(): string[] {
+    const dep = this.form?.get('departamento')?.value;
+    return dep ? (this.cargosPorDepartamento[dep] ?? []) : [];
+  }
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      tipoIdentificacion: ['RPS',  Validators.required],
-      tipoContrato:       ['Fijo', Validators.required],
-      nombres:            ['',     [Validators.required, Validators.minLength(2)]],
-      apellidos:          ['',     [Validators.required, Validators.minLength(2)]],
-      identificacion:     ['',     [Validators.required, Validators.minLength(8), Validators.pattern(/^\d+$/)]],
-      fechaNacimiento:    ['',     Validators.required],
-      genero:             ['',     Validators.required],
-      correoElectronico:  ['',     [Validators.required, Validators.email]],
-      telefono:           ['',     [Validators.required, Validators.pattern(/^09\d{8}$/)]],
-      direccion:          ['',     [Validators.required, Validators.minLength(5)]],
-      departamento:       ['',     Validators.required],
-      fechaContratacion:  ['',     Validators.required],
-      cargo:              ['',     [Validators.required, Validators.minLength(3)]],
-      aniosExperiencia:   [null,   [Validators.required, Validators.min(0), Validators.max(50)]],
-      modalidad:          ['',     Validators.required],
-      categoria:          ['',     Validators.required],
+      tipoIdentificacion: ['',  Validators.required],
+      tipoContrato:       ['', Validators.required],
+      nombres:            ['', [Validators.required, Validators.minLength(3)]],
+      apellidos:          ['', [Validators.required, Validators.minLength(3)]],
+      identificacion:     ['', [Validators.required, Validators.minLength(10)]],
+      fechaNacimiento:    ['', Validators.required],
+      genero:             ['', Validators.required],
+      correoElectronico:  ['', [Validators.required, Validators.email]],
+      telefono:           ['', [Validators.required, Validators.minLength(10)]],
+      direccion:          ['', Validators.required],
+      departamento:       ['', Validators.required],
+      fechaContratacion:  ['', Validators.required],
+      cargo:              ['', Validators.required],
+      aniosExperiencia:   [null, [Validators.required, Validators.min(0), Validators.max(50)]],
+      modalidad:          ['', Validators.required],
+      categoria:          ['', Validators.required],
+    });
+
+    // Reset cargo cuando cambia departamento
+    this.form.get('departamento')?.valueChanges.subscribe(() => {
+      this.form.patchValue({ cargo: '' });
     });
   }
 
-  // ← CLAVE: detecta si el campo tiene valor para el floating label
   tieneValor(campo: string): boolean {
     const val = this.form.get(campo)?.value;
     return val !== null && val !== undefined && val !== '';

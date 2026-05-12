@@ -14,13 +14,13 @@ export class ColaboradoresService {
 
   private _colaboradores = signal<Colaborador[]>([...COLABORADORES_MOCK]);
 
-  // ── Métricas reactivas — se recalculan automáticamente ──
+  // ── Métricas reactivas ───────────────────────────────────
   readonly noAsignados = computed(() =>
-  this._colaboradores().filter(c => c.estado === 'Activo' && c.numProyectos === 0).length
+    this._colaboradores().filter(c => c.estado === 'Activo' && c.numProyectos === 0).length
   );
 
-readonly asignados = computed(() =>
-  this._colaboradores().filter(c => c.estado === 'Activo' && c.numProyectos >= 1).length
+  readonly asignados = computed(() =>
+    this._colaboradores().filter(c => c.estado === 'Activo' && c.numProyectos >= 1).length
   );
 
   readonly inactivos = computed(() =>
@@ -48,6 +48,7 @@ readonly asignados = computed(() =>
   ): Observable<ColaboradoresPaginados> {
     let data = [...this._colaboradores()];
 
+    // Filtro búsqueda
     if (filtros.busqueda.trim()) {
       const term = filtros.busqueda.trim().toLowerCase();
       data = data.filter(c =>
@@ -58,14 +59,22 @@ readonly asignados = computed(() =>
       );
     }
 
+    // Filtro estado
     if (filtros.estado !== 'Todos') {
       data = data.filter(c => c.estado === filtros.estado);
     }
 
-    const total       = data.length;
+    // Filtro asignación — solo activos
+    if (filtros.asignacion === 'noAsignado') {
+      data = data.filter(c => c.estado === 'Activo' && c.numProyectos === 0);
+    } else if (filtros.asignacion === 'asignado') {
+      data = data.filter(c => c.estado === 'Activo' && c.numProyectos >= 1);
+    }
+
+    const total        = data.length;
     const totalPaginas = Math.ceil(total / porPagina);
-    const inicio      = (pagina - 1) * porPagina;
-    const paginaData  = data.slice(inicio, inicio + porPagina);
+    const inicio       = (pagina - 1) * porPagina;
+    const paginaData   = data.slice(inicio, inicio + porPagina);
 
     return of({ data: paginaData, total, pagina, porPagina, totalPaginas }).pipe(delay(150));
   }
@@ -90,7 +99,6 @@ readonly asignados = computed(() =>
   }
 
   // ── EDITAR ──────────────────────────────────────────────
-  // Al editar estado → los computeds se recalculan solos
   editarColaborador(id: string, dto: EditarColaboradorDto): Observable<Colaborador> {
     const index = this._colaboradores().findIndex(c => c.id === id);
     if (index === -1) return throwError(() => new Error(`ID ${id} no encontrado`));
@@ -114,6 +122,4 @@ readonly asignados = computed(() =>
     this._colaboradores.update(lista => lista.filter(c => c.id !== id));
     return of(void 0).pipe(delay(150));
   }
-
-  
 }

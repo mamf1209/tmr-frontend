@@ -4,10 +4,13 @@
   <div class="metricas__card">
     <div class="metricas__card-content">
       <div class="metricas__top">
-        <svg class="metricas__icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M5 5L19 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+        <img
+          src="assets/iconos/card-project.svg"
+          alt="proyectos"
+          class="metricas__icon"
+          width="20"
+          height="20"
+        />
         <span class="metricas__numero">
           {{ mostrandoAsignados ? asignados : noAsignados }}
         </span>
@@ -21,9 +24,7 @@
       (click)="toggleAsignados()"
       [title]="mostrandoAsignados ? 'Ver no asignados' : 'Ver asignados'"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/iconos/filter.svg" alt="filtrar" width="14" height="14" />
     </button>
   </div>
 
@@ -31,9 +32,13 @@
   <div class="metricas__card">
     <div class="metricas__card-content">
       <div class="metricas__top">
-        <svg class="metricas__icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/>
-        </svg>
+        <img
+          src="assets/iconos/card-user.svg"
+          alt="usuarios"
+          class="metricas__icon"
+          width="20"
+          height="20"
+        />
         <span class="metricas__numero">
           {{ mostrandoActivos ? activos : inactivos }}
         </span>
@@ -47,9 +52,7 @@
       (click)="toggleActivos()"
       [title]="mostrandoActivos ? 'Ver inactivos' : 'Ver activos'"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/iconos/filter.svg" alt="filtrar" width="14" height="14" />
     </button>
   </div>
 

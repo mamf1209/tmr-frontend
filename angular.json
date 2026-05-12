@@ -27,11 +27,11 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/app/shared/assets/iconos",
+                "output": "assets/iconos"
               }
             ],
             "styles": [
-              "src/tailwind.css"
               "src/styles.scss"
             ]
           },

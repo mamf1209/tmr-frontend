@@ -11,7 +11,6 @@ export class ExportarService {
   exportarPDF(colaboradores: Colaborador[]): void {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
-    // Header azul
     doc.setFillColor(22, 53, 114);
     doc.rect(0, 0, 297, 20, 'F');
     doc.setTextColor(255, 255, 255);
@@ -19,7 +18,6 @@ export class ExportarService {
     doc.setFont('helvetica', 'bold');
     doc.text('REPORTE DE COLABORADORES', 148, 13, { align: 'center' });
 
-    // Fecha
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     const fecha = new Date().toLocaleDateString('es-EC', {
@@ -27,7 +25,6 @@ export class ExportarService {
     });
     doc.text(`Generado el: ${fecha}`, 285, 13, { align: 'right' });
 
-    // Tabla
     autoTable(doc, {
       startY: 26,
       head: [[
@@ -74,11 +71,9 @@ export class ExportarService {
       willDrawCell: (data) => {
         if (data.section === 'body' && data.column.index === 6) {
           const estado = data.cell.raw as string;
-          if (estado === 'Activo') {
-            data.cell.styles.textColor = [22, 163, 74];
-          } else {
-            data.cell.styles.textColor = [107, 114, 128];
-          }
+          data.cell.styles.textColor = estado === 'Activo'
+            ? [22, 163, 74]
+            : [107, 114, 128];
         }
       },
       margin: { left: 10, right: 10 },
@@ -86,7 +81,6 @@ export class ExportarService {
       tableLineWidth: 0.1,
     });
 
-    // Footer paginado
     const pageCount = (doc as any).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -106,11 +100,6 @@ export class ExportarService {
     const wb = XLSX.utils.book_new();
 
     // ── Hoja principal ──────────────────────────────────
-    // Fila 1: título
-    // Fila 2: fecha
-    // Fila 3: headers
-    // Fila 4+: datos
-
     const titulo  = [['REPORTE DE COLABORADORES — Integrity Solutions']];
     const subfila = [[`Generado el: ${new Date().toLocaleDateString('es-EC')}`]];
     const headers = [[
@@ -120,6 +109,7 @@ export class ExportarService {
       'Años Experiencia', 'Teléfono', 'Género',
       'Fecha Nacimiento', 'Fecha Contratación', 'Dirección', 'Estado'
     ]];
+
     const filas = colaboradores.map((c, i) => [
       i + 1,
       c.identificacion,
@@ -140,9 +130,87 @@ export class ExportarService {
       c.estado,
     ]);
 
-    // Combinar todas las filas
     const todasLasFilas = [...titulo, ...subfila, ...headers, ...filas];
     const ws = XLSX.utils.aoa_to_sheet(todasLasFilas);
+
+    // ── Estilos de celdas ───────────────────────────────
+    const totalCols = 17;
+    const totalFilas = todasLasFilas.length;
+
+    // Estilo título — fila 1
+    const celdaTitulo = ws['A1'];
+    if (celdaTitulo) {
+      celdaTitulo.s = {
+        font:      { bold: true, sz: 14, color: { rgb: 'FFFFFF' } },
+        fill:      { fgColor: { rgb: '163572' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+      };
+    }
+
+    // Merge título A1:Q1
+    ws['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: totalCols - 1 } },
+      { s: { r: 1, c: 0 }, e: { r: 1, c: totalCols - 1 } },
+    ];
+
+    // Estilo subfila — fila 2
+    const celdaSubfila = ws['A2'];
+    if (celdaSubfila) {
+      celdaSubfila.s = {
+        font:      { italic: true, sz: 9, color: { rgb: '6B7280' } },
+        fill:      { fgColor: { rgb: 'F0F4FF' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+      };
+    }
+
+    // Estilo headers — fila 3
+    const colLetras = 'ABCDEFGHIJKLMNOPQ'.split('');
+    colLetras.forEach(col => {
+      const celda = ws[`${col}3`];
+      if (celda) {
+        celda.s = {
+          font:      { bold: true, sz: 9, color: { rgb: 'FFFFFF' } },
+          fill:      { fgColor: { rgb: '163572' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: {
+            bottom: { style: 'thin', color: { rgb: 'FFFFFF' } },
+          },
+        };
+      }
+    });
+
+    // Estilo filas de datos
+    for (let row = 4; row <= totalFilas; row++) {
+      const esAlterna = (row % 2 === 0);
+      const fillColor = esAlterna ? 'F5F7FF' : 'FFFFFF';
+
+      colLetras.forEach((col, colIdx) => {
+        const ref = `${col}${row}`;
+        const celda = ws[ref];
+        if (celda) {
+          // Estado con color
+          if (colIdx === 16) {
+            const esActivo = celda.v === 'Activo';
+            celda.s = {
+              font:      { sz: 9, color: { rgb: esActivo ? '16A34A' : '6B7280' }, bold: true },
+              fill:      { fgColor: { rgb: fillColor } },
+              alignment: { horizontal: 'center', vertical: 'center' },
+              border:    this.getBorder(),
+            };
+          } else {
+            celda.s = {
+              font:      { sz: 9, color: { rgb: '374151' } },
+              fill:      { fgColor: { rgb: fillColor } },
+              alignment: {
+                horizontal: colIdx === 0 || colIdx === 2 || colIdx === 4 ? 'center' : 'left',
+                vertical: 'center',
+              },
+              border: this.getBorder(),
+            };
+          }
+        }
+      });
+    }
 
     // Ancho de columnas
     ws['!cols'] = [
@@ -165,30 +233,97 @@ export class ExportarService {
       { wch: 12 },
     ];
 
-    // Alto de filas título y subtítulo
-    ws['!rows'] = [{ hpt: 22 }, { hpt: 14 }];
+    // Alto de filas
+    const rowHeights: { hpt: number }[] = [
+      { hpt: 28 }, // título
+      { hpt: 16 }, // subfila
+      { hpt: 20 }, // headers
+    ];
+    for (let i = 3; i < totalFilas; i++) {
+      rowHeights.push({ hpt: 18 });
+    }
+    ws['!rows'] = rowHeights;
 
     XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
 
     // ── Hoja resumen ────────────────────────────────────
-    const wsResumen = XLSX.utils.aoa_to_sheet([
+    const resumenFilas = [
       ['RESUMEN DE COLABORADORES'],
       [''],
       ['Métrica', 'Total'],
-      ['Total colaboradores',  colaboradores.length],
-      ['Activos',   colaboradores.filter(c => c.estado === 'Activo').length],
-      ['Inactivos', colaboradores.filter(c => c.estado === 'Inactivo').length],
-      ['No asignados (0 proyectos)', colaboradores.filter(c => c.numProyectos === 0).length],
-      ['Asignados (1+ proyectos)',   colaboradores.filter(c => c.numProyectos > 0).length],
-    ]);
+      ['Total colaboradores',         colaboradores.length],
+      ['Activos',                     colaboradores.filter(c => c.estado === 'Activo').length],
+      ['Inactivos',                   colaboradores.filter(c => c.estado === 'Inactivo').length],
+      ['No asignados (0 proyectos)',  colaboradores.filter(c => c.numProyectos === 0 && c.estado === 'Activo').length],
+      ['Asignados (1+ proyectos)',    colaboradores.filter(c => c.numProyectos > 0 && c.estado === 'Activo').length],
+    ];
 
-    wsResumen['!cols'] = [{ wch: 28 }, { wch: 12 }];
+    const wsResumen = XLSX.utils.aoa_to_sheet(resumenFilas);
+
+    // Estilo resumen título
+    const tituloResumen = wsResumen['A1'];
+    if (tituloResumen) {
+      tituloResumen.s = {
+        font:      { bold: true, sz: 13, color: { rgb: 'FFFFFF' } },
+        fill:      { fgColor: { rgb: '163572' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+      };
+    }
+
+    wsResumen['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+    ];
+
+    // Estilo headers resumen
+    ['A3', 'B3'].forEach(ref => {
+      const celda = wsResumen[ref];
+      if (celda) {
+        celda.s = {
+          font: { bold: true, sz: 10, color: { rgb: 'FFFFFF' } },
+          fill: { fgColor: { rgb: '163572' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: this.getBorder(),
+        };
+      }
+    });
+
+    // Estilo filas resumen
+    for (let row = 4; row <= resumenFilas.length; row++) {
+      const esAlterna = (row % 2 === 0);
+      ['A', 'B'].forEach((col, idx) => {
+        const ref = `${col}${row}`;
+        const celda = wsResumen[ref];
+        if (celda) {
+          celda.s = {
+            font:      { sz: 10, color: { rgb: idx === 1 ? '163572' : '374151' }, bold: idx === 1 },
+            fill:      { fgColor: { rgb: esAlterna ? 'F0F4FF' : 'FFFFFF' } },
+            alignment: { horizontal: idx === 1 ? 'center' : 'left', vertical: 'center' },
+            border:    this.getBorder(),
+          };
+        }
+      });
+    }
+
+    wsResumen['!cols'] = [{ wch: 30 }, { wch: 12 }];
+    wsResumen['!rows'] = [{ hpt: 26 }, { hpt: 8 }, { hpt: 20 },
+      ...Array(resumenFilas.length - 3).fill({ hpt: 20 })
+    ];
+
     XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
 
     XLSX.writeFile(wb, `colaboradores_${this.getFechaArchivo()}.xlsx`);
   }
 
   // ── Helpers ───────────────────────────────────────────
+  private getBorder() {
+    return {
+      top:    { style: 'thin', color: { rgb: 'E5E7EB' } },
+      bottom: { style: 'thin', color: { rgb: 'E5E7EB' } },
+      left:   { style: 'thin', color: { rgb: 'E5E7EB' } },
+      right:  { style: 'thin', color: { rgb: 'E5E7EB' } },
+    };
+  }
+
   private formatFecha(fecha: string): string {
     if (!fecha) return '—';
     const [y, m, d] = fecha.split('-');
