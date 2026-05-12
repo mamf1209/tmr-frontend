@@ -2,7 +2,7 @@
 // MÓDULO COLABORADORES — Modelos e Interfaces
 // ============================================================
  
-export type TipoIdentificacion = 'RPS' | 'ISC' | 'RPS E ISC';
+export type TipoIdentificacion = 'RPS' | 'ISC' | 'RPS & ISC';
 export type EstadoColaborador = 'Activo' | 'Inactivo' | 'Todos';
 export type Modalidad = 'Presencial' | 'Remoto' | 'Híbrida';
 export type Categoria = 'Junior' | 'Semi-senior' | 'Senior' | 'Especialista' | 'Especialista Plus';

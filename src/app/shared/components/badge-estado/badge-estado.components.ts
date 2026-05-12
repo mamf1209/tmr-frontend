@@ -22,7 +22,7 @@ import { EstadoColaborador } from '../../../features/colaboradores/models/colabo
       border: 1px solid #e5e7eb;
       background: #ffffff;
       font-family: 'Inter', sans-serif;
-      font-size: 13px;
+      font-size: 11.5px;
       font-weight: 500;
       color: #374151;
       white-space: nowrap;
@@ -41,7 +41,7 @@ import { EstadoColaborador } from '../../../features/colaboradores/models/colabo
       background-color: #9ca3af;
     }
     .badge-text {
-      color: #374151;
+      color: #737373;
     }
   `],
 })

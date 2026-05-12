@@ -45,14 +45,14 @@
 
   &__td {
     padding: 6px 14px;
-    font-size: 12px;
+    font-size: 11px;
     color: #737373;
     vertical-align: middle;
     white-space: nowrap;
 
-    &--id      { font-weight: 500; font-size: 13px; }
-    &--nombre  { font-weight: 500; }
-    &--email   { font-size: 13px; }
+    &--id      { font-weight: 500; font-size: 11px; }
+    &--nombre  { font-weight: 400; }
+    &--email   { font-size: 11.5px; }
     &--center  { text-align: center; }
     &--actions {
       padding: 0 8px;
@@ -69,8 +69,8 @@
 
   &__tipo-badge {
     display: inline-block;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 400;
     color: #737373;
   }
 
@@ -146,7 +146,7 @@
     &:hover { background: #f5f5f5; }
 
     &--danger {
-      color: #dc2626;
+      color: #737373;
       &:hover { background: #fef2f2; }
     }
   }

@@ -84,7 +84,7 @@ const dominios = [
 
  
 
-const tipos: TipoIdentificacion[] = ['RPS', 'ISC', 'RPS E ISC'];
+const tipos: TipoIdentificacion[] = ['RPS', 'ISC', 'RPS & ISC'];
 const estados: EstadoColaborador[] = ['Activo', 'Inactivo'];
 const modalidades: Modalidad[] = ['Presencial', 'Remoto', 'Híbrida'];
 const categorias: Categoria[] = ['Junior', 'Semi-senior', 'Senior', 'Especialista', 'Especialista Plus'];
